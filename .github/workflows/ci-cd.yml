@@ -90,4 +90,3 @@ jobs:
       - name: Limpar container de teste
         if: always()
         run: docker rm -f provamedgroup-test
-
