@@ -9,7 +9,6 @@ on:
 env:
   DOTNET_VERSION: "8.0.x"
   DOCKER_IMAGE_NAME: cauaholanda/provamedgroup
-  # Altere 'seu-usuario-docker' para seu nome de usuário do Docker Hub
 
 jobs:
   build-and-test:
@@ -42,7 +41,7 @@ jobs:
 
   docker-build-push:
     name: Build e Push da Imagem Docker
-    needs: build-and-test # só executa se os testes passarem
+    needs: build-and-test
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
     steps:
@@ -78,12 +77,10 @@ jobs:
         run: |
           docker pull ${{ env.DOCKER_IMAGE_NAME }}:latest
           docker run -d --name provamedgroup-test -p 8080:80 ${{ env.DOCKER_IMAGE_NAME }}:latest
-          sleep 10  # aguarda a aplicação iniciar
+          sleep 10
 
       - name: Testar saúde da aplicação (endpoint /health)
         run: |
-          # Se você tiver um endpoint de saúde, descomente:
-          # curl --fail http://localhost:8080/health || exit 1
           echo "Aplicação iniciada com sucesso. Teste básico concluído."
           docker logs provamedgroup-test --tail 20
 
