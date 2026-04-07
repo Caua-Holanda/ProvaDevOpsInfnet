@@ -29,10 +29,23 @@ jobs:
       - name: Build da solução
         run: dotnet build --no-restore -c Release
 
-      - name: Executar testes unitários
-        run: dotnet test --no-build -c Release --verbosity normal --logger "trx" --results-directory TestResults
+      - name: Executar testes unitários com cobertura
+        run: |
+          dotnet add package coverlet.collector
+          dotnet test --collect:"XPlat Code Coverage" --results-directory ./TestResults --no-build -c Release
 
-      - name: Publicar artefatos de teste (opcional)
+      - name: Gerar relatório de cobertura HTML
+        run: |
+          dotnet tool install -g dotnet-reportgenerator-globaltool
+          reportgenerator -reports:"./TestResults/**/coverage.cobertura.xml" -targetdir:"./CoverageReport" -reporttypes:Html
+
+      - name: Publicar relatório de cobertura como artefato
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: ./CoverageReport
+
+      - name: Publicar artefatos de teste
         if: always()
         uses: actions/upload-artifact@v4
         with:
