@@ -30,9 +30,7 @@ jobs:
         run: dotnet build --no-restore -c Release
 
       - name: Executar testes unitários com cobertura
-        run: |
-          dotnet add package coverlet.collector
-          dotnet test --collect:"XPlat Code Coverage" --results-directory ./TestResults --no-build -c Release
+        run: dotnet test --collect:"XPlat Code Coverage" --results-directory ./TestResults -c Release --no-build
 
       - name: Gerar relatório de cobertura HTML
         run: |
